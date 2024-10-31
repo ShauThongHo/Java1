@@ -1,7 +1,7 @@
 //HO SHAU THONG
 //9B240002A
 //BoS24-A1
-//3 Nov 2024
+//31 Oct 2024
 /*Write a program that prompts the user to enter the distance to drive, the fuel efficiency of the car in miles per gallon, and the price per gallon, then displays the cost of the trip.  Here is a sample run: 
 
 Enter the driving distance: 900.5 
