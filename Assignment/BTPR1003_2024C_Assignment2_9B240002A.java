@@ -1,7 +1,7 @@
 //HO SHAU THONG
 //9B240002A
 //BoS24-A1
-//04 Now 2024
+//07 Now 2024
 /*A shipping company uses the following function to calculate the cost (in Ringgit Malaysia) of shipping based on the cost of weight (in kilograms) multiply weight and plus a fixed cost RM20.00. 
 
                     12.00, if 0 < w <= 1 
