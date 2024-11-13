@@ -19,7 +19,6 @@ Enter a student name: Moses
 Enter a student score: 99 
 
 The name of the student with highest score: Moses's score is 99.0. 
-
 The name of the student with lowest score: Peter’s score is 45.0.*/
 
 import java.util.Scanner;
@@ -41,14 +40,14 @@ public class BTPR1003_2024C_Assignment3_9B240002A{
         int count = 0; //counter
 
         //prompt user to enter the number of students
-        System.out.print("Enter the number of students:");
+        System.out.print("Enter the number of students: ");
         numOfStudent = input.nextInt();
 
         //loop to get student name and score
         while(count < numOfStudent){
-            System.out.print("Enter a student name:");
+            System.out.print("Enter a student name: ");
             studentName = input.next();
-            System.out.print("Enter a student score:");
+            System.out.print("Enter a student score: ");
             studentScore = input.nextDouble();
 
             //check if the student score is higher than the highest score
@@ -67,7 +66,7 @@ public class BTPR1003_2024C_Assignment3_9B240002A{
         }
 
         //display the name of the student with highest and lowest score
-        System.out.println("The name of the student with highest score: " + highestName + "'s score is " + highestScore + ".");
+        System.out.println("\nThe name of the student with highest score: " + highestName + "'s score is " + highestScore + ".");
         System.out.println("The name of the student with lowest score: " + lowestName + "'s score is " + lowestScore + ".");
     }
 }
