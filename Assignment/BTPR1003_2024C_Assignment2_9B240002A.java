@@ -63,6 +63,8 @@ public class BTPR1003_2024C_Assignment2_9B240002A {
         //Check if the weight is greater than 20
         else{
             System.out.println("The package cannot be shipped");
+            // Close the Scanner object
+            input.close();
         }
     }
 }

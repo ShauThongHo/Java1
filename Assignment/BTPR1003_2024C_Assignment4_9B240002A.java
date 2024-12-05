@@ -19,29 +19,37 @@ public class BTPR1003_2024C_Assignment4_9B240002A {
 
         //declare variables
         int number = 0; //number
+        int temp = 0; //temporary variable
+        String message = ""; //message to display the sum of all digits
+        int n = 0; //variable to store the number
 
         //prompt user to enter a number
         System.out.print("Enter a number: ");
         number = input.nextInt();
 
+        //store the number in n
+        n = number;
+        while (n != 0) {
+            temp = n % 10; 
+            message += temp + " + ";
+            n /= 10; 
+        }
+
         //display the sum of all digits
-        System.out.println("The sum of all digits is: " + sumDigits(number));
+        System.out.println("The sum of all digits is: " + sumDigits(number) + " (= " + message.substring(0, message.length() - 3) + ")");
         
     }
 
     // Method to compute the sum of the digits in an integer
-    public static String sumDigits(int n) {
+    public static int sumDigits(int n) {
         int sum = 0;
         int temp = 0;
-        String result = "";
-        String message = "";
+
         while (n != 0) {
             temp = n % 10; //get the last digit
             sum += temp; //add the last digit to sum
-            message += temp + " + ";
             n /= 10; //remove the last digit
         }
-        result = sum + " (= " + message.substring(0, message.length() - 3) + ")"; //remove the last " + "
-        return result;
+        return sum;
     }
 }

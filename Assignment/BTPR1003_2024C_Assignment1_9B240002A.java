@@ -45,5 +45,7 @@ public class BTPR1003_2024C_Assignment1_9B240002A{
 
         //Display the cost of driving
         System.out.println("The cost of driving is RM" + costOfDriving);
+        // Close the Scanner object
+        input.close();
     }
 }
