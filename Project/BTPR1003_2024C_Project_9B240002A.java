@@ -1,6 +1,12 @@
-import java.util.*;
+//HO SHAU THONG
+//9B240002A
+//BoS24-A1
+//2 Jan 2024
 
-public class num4 {
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class BTPR1003_2024C_Project_9B240002A {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         int userInput = 0;
@@ -11,6 +17,8 @@ public class num4 {
         String[] nameRank = new String[5];
         String name = "";
         int time = 0;
+
+        initializeRanks(nameRank, timeRank, levelRank);
 
         Arrays.fill(timeRank, Integer.MAX_VALUE); // Initialize leaderboard with maximum values
 
@@ -80,19 +88,21 @@ public class num4 {
 
     public static String[] playGame(int level) {
         Scanner input = new Scanner(System.in);
-        String[] history = new String[10];
+        String[] history = new String[100];
         Arrays.fill(history, "    ");
         String userGuess = "";
         int count = 0;
         int[] randomNum = new int[level];
-        int[] correctNumbers = new int[10];
-        int[] correctPositions = new int[10];
+        int[] correctNumbers = new int[100];
+        int[] correctPositions = new int[100];
         int[] guessNum = new int[level];
         int userGuessLength = 0;
         int[] temp = new int[level];
         String name = "";
         long startTime = System.currentTimeMillis();
         long endTime = 0;
+        int chances = 0;
+        boolean value = true;
 
         // Generate random numbers
         for (int i = 0; i < level; i++) {
@@ -104,17 +114,29 @@ public class num4 {
                 }
             }
         }
-
+        devider();
         System.out.println("Welcome to the game!");
         System.out.println("The game has generated " + level + " random numbers between 0 to 9.");
-        System.out.println("You have 10 chances to guess the number.");
+        while (value) {
+        	devider();
+            System.out.print("Please enter the chances that you want to try(below 100):");
+            chances = input.nextInt();
+            if (chances > 100 || chances < 1) {
+            	devider();
+                System.out.println("Invalid input, please try again.");
+            } else {
+                value = false;
+            }
+        }
+        devider();
+        System.out.println("You have" + chances + "chances to guess the number.");
         // test
         System.out.println("The correct number is: " + Arrays.toString(randomNum));
 
-        for (int i = 1; i <= 10; i++, count++) {
+        for (int i = 1; i <= chances; i++, count++) {
             devider();
             // Print historical guesses
-            for (int j = 0; j < 10; j++) {
+            for (int j = 0; j < count; j++) {
                 System.out.printf("%d. %s %d Correct Numbers %d Correct Positions\n", j + 1, history[j],
                         correctNumbers[j], correctPositions[j]);
             }
@@ -123,7 +145,7 @@ public class num4 {
             System.out.print("Please enter your " + level + " guess number:");
             userGuess = input.next();
             userGuessLength = userGuess.length();
-            if (userGuessLength > level || userGuessLength < level) {
+            if (userGuessLength > level || userGuessLength < level || !userGuess.matches("[0-9]+")) {
                 devider();
                 System.out.println("Invalid input, please try again.");
                 i--;
@@ -167,7 +189,7 @@ public class num4 {
                 randomNum[p] = temp[p];
             }
         }
-        for (int j = 0; j < 10; j++) {
+        for (int j = 0; j < count; j++) {
             System.out.printf("%d. %s %d Correct Numbers %d Correct Positions\n", j + 1, history[j], correctNumbers[j],
                     correctPositions[j]);
         }
@@ -178,6 +200,7 @@ public class num4 {
     }
 
     public static void rule() {
+    	devider();
         System.out.println("Rules of the Game:");
         System.out.println("1. The game will generate a set of random numbers between 0 and 9.");
         System.out.println("2. You will be given a certain number of attempts to guess the correct sequence.");
@@ -205,7 +228,7 @@ public class num4 {
         devider();
         System.out.println("Rank of the game by difficulty and time:");
         for (int i = 0; i < 5; i++) {
-            if (name[i] != null) {
+            if (!name[i].isEmpty() && time[i] != Integer.MAX_VALUE) {
                 System.out.println((i + 1) + ". " + (name[i] == null ? "No player" : name[i]) + " Time: " + time[i]
                         + "s Difficulty: " + level[i]);
 
@@ -235,11 +258,10 @@ public class num4 {
 
     public static void updateRank(String[] nameRank, int[] timeRank, int[] levelRank, String name, int time,
             int levelWeight) {
-        double totalScore = time / levelWeight; // Combine time with difficulty: higher difficulty adds more to the
-                                                // score
+        double totalScore = time / levelWeight; // Combine time with difficulty: higher difficulty adds more to the score
 
         for (int i = 0; i < 5; i++) {
-            if (totalScore < timeRank[i]) {
+            if (timeRank[i] == Integer.MAX_VALUE || totalScore < timeRank[i]) {
                 // Move the lower ranks down
                 for (int j = 4; j > i; j--) {
                     timeRank[j] = timeRank[j - 1];
@@ -253,6 +275,12 @@ public class num4 {
                 break;
             }
         }
+    }
+
+    public static void initializeRanks(String[] nameRank, int[] timeRank, int[] levelRank) {
+        Arrays.fill(nameRank, "");
+        Arrays.fill(timeRank, Integer.MAX_VALUE);
+        Arrays.fill(levelRank, 0);
     }
 
     public static void devider() {

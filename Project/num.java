@@ -1,17 +1,20 @@
 import java.util.*;
 
-public class num {
+public class num4 {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         int userInput = 0;
         boolean quitGame = false;
         int level = 0;
         int[] timeRank = new int[5];
+        int[] levelRank = new int[5]; // Difficulty rank for each player
+        int[] attemptsRank = new int[5]; // Number of attempts for each player
         String[] nameRank = new String[5];
         String name = "";
         int time = 0;
-        int timeTemp = 0;
-        String nameTemp = "";
+        int attempts = 0;
+
+        Arrays.fill(timeRank, Integer.MAX_VALUE); // Initialize leaderboard with maximum values
 
         while (!quitGame) {
             devider();
@@ -22,8 +25,6 @@ public class num {
             System.out.println("4. Exit");
             System.out.print("Please enter your choice:");
             userInput = input.nextInt();
-            
-            
 
             if (userInput == 1) {
                 devider();
@@ -31,100 +32,45 @@ public class num {
                 do {
                     devider();
                     System.out.println("Please enter the level of difficulty:");
-                    System.out.println("1. Easy");
-                    System.out.println("2. Medium");
-                    System.out.println("3. Hard");
+                    System.out.println("1. Easy (4 digits)");
+                    System.out.println("2. Medium (6 digits)");
+                    System.out.println("3. Hard (8 digits)");
                     System.out.print("Please enter your choice:");
                     userInput = input.nextInt();
-                    if(userInput == 1)
-                    level = 4;
-                    else if(userInput == 2)
-                    level = 6;
-                    else if(userInput == 3)
-                    level = 8;
-                    else
-                    {
+                    if (userInput == 1)
+                        level = 4;
+                    else if (userInput == 2)
+                        level = 6;
+                    else if (userInput == 3)
+                        level = 8;
+                    else {
                         System.out.println("Invalid input, please try again.");
+                        continue; // Re-select difficulty
                     }
 
-                        String[] winnerData = playGame(level);
-                        name = winnerData[0];
-                        time = Integer.parseInt(winnerData[1]);
+                    String[] winnerData = playGame(level);
+                    name = winnerData[0];
+                    time = Integer.parseInt(winnerData[1]);
+                    attempts = Integer.parseInt(winnerData[2]);
 
-                        int i = 0;
-                        if(time < timeRank[i]){
-                            timeTemp = timeRank[i];
-                            nameTemp = nameRank[i];
-                            timeRank[i] = time;
-                            nameRank[i] = name;
-                            timeTemp = timeRank[i+1];
-                            nameTemp = nameRank[i+1];
-                            timeRank[i+1] = timeTemp;
-                            nameRank[i+1] = nameTemp;
-                            timeTemp = timeRank[i+2];
-                            nameTemp = nameRank[i+2];
-                            timeRank[i+2] = timeTemp;
-                            nameRank[i+2] = nameTemp;
-                            timeTemp = timeRank[i+3];
-                            nameTemp = nameRank[i+3];
-                            timeRank[i+3] = timeTemp;
-                            nameRank[i+3] = nameTemp;
-                            timeRank[i+4] = timeTemp;
-                            nameRank[i+4] = nameTemp;
+                    // Set difficulty weight
+                    int levelWeight = 0;
+                    if (level == 4) {
+                        levelWeight = 1; // Easy
+                    } else if (level == 6) {
+                        levelWeight = 2; // Medium
+                    } else if (level == 8) {
+                        levelWeight = 3; // Hard
+                    }
 
-                        }
-                        else if(time < timeRank[i]+1)
-                        {
-                            timeTemp = timeRank[i+1];
-                            nameTemp = nameRank[i+1];
-                            timeRank[i+1] = time;
-                            nameRank[i+1] = name;
-                            timeTemp = timeRank[i+2];
-                            nameTemp = nameRank[i+2];
-                            timeRank[i+2] = timeTemp;
-                            nameRank[i+2] = nameTemp;
-                            timeTemp = timeRank[i+3];
-                            nameTemp = nameRank[i+3];
-                            timeRank[i+3] = timeTemp;
-                            nameRank[i+3] = nameTemp;
-                            timeRank[i+4] = timeTemp;
-                            nameRank[i+4] = nameTemp;
-                        }
-                        else if(time < timeRank[i]+2)
-                        {
-                            timeTemp = timeRank[i+2];
-                            nameTemp = nameRank[i+2];
-                            timeRank[i+2] = time;
-                            nameRank[i+2] = name;
-                            timeTemp = timeRank[i+3];
-                            nameTemp = nameRank[i+3];
-                            timeRank[i+3] = timeTemp;
-                            nameRank[i+3] = nameTemp;
-                            timeRank[i+4] = timeTemp;
-                            nameRank[i+4] = nameTemp;
-                        }
-                        else if(time < timeRank[i]+3)
-                        {
-                            timeTemp = timeRank[i+3];
-                            nameTemp = nameRank[i+3];
-                            timeRank[i+3] = time;
-                            nameRank[i+3] = name;
-                            timeRank[i+4] = timeTemp;
-                            nameRank[i+4] = nameTemp;
-                        }
-                        else if(time < timeRank[i]+4)
-                        {
-                            timeRank[i+4] = time;
-                            nameRank[i+4] = name;
-                        }
-                        quitGame = backMenu();
-
+                    // Update leaderboard based on time, difficulty, and attempts
+                    updateRank(nameRank, timeRank, levelRank, attemptsRank, name, time, levelWeight, attempts);
+                    quitGame = backMenu();
                 } while (userInput != 1 && userInput != 2 && userInput != 3);
             } else if (userInput == 2) {
                 rule();
             } else if (userInput == 3) {
-
-                rank(nameRank, timeRank);
+                rank(nameRank, timeRank, levelRank, attemptsRank);
             } else if (userInput == 4) {
                 System.out.println("Goodbye!");
                 quitGame = true;
@@ -133,25 +79,27 @@ public class num {
                 System.out.println("Invalid input, please try again.");
             }
         }
-
     }
 
     public static String[] playGame(int level) {
         Scanner input = new Scanner(System.in);
-        String[] history = { "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    ", "    " };
-        String userGuest = "";
+        String[] history = new String[100];
+        Arrays.fill(history, "    ");
+        String userGuess = "";
         int count = 0;
         int[] randomNum = new int[level];
-        int[] a = new int[10];
-        int[] b = new int[10];
+        int[] correctNumbers = new int[100];
+        int[] correctPositions = new int[100];
         int[] guessNum = new int[level];
-        int userGuestLength = 0;
+        int userGuessLength = 0;
         int[] temp = new int[level];
         String name = "";
         long startTime = System.currentTimeMillis();
-        String time = 0;
         long endTime = 0;
+        int changes = 0;
+        boolean value = true;
 
+        // Generate random numbers
         for (int i = 0; i < level; i++) {
             randomNum[i] = (int) (Math.random() * 10);
             for (int j = 0; j < i; j++) {
@@ -162,119 +110,139 @@ public class num {
             }
         }
 
-        for (int i = 0; i < level; i++) {
-            System.out.print(randomNum[i]);
-        }
-
         System.out.println("Welcome to the game!");
-        System.out.println("The game has generated" + level + "random number between 0 to 9.");
-        System.out.println("You have 10 chances to guess the number.");
-
-        for (int i = 1; i <= 10; i++, count++) {
-            devider();
-            for (int j = 0; j < 10; j++) {
-                if (level == 4)
-                    System.out.printf("%d. %s %dA %dB\n", j + 1, history[j], a[j], b[j]);
-                else if (level == 6)
-                    System.out.printf("%d. %s %dA %dB\n", j + 1, history[j], a[j], b[j]);
-                else if (level == 8)
-                    System.out.printf("%d. %s %dA %dB\n", j + 1, history[j], a[j], b[j]);
+        System.out.println("The game has generated " + level + " random numbers between 0 to 9.");
+        while (value) {
+            System.out.print("Please enter the changes that you want to try(below 100):");
+            changes = input.nextInt();
+            if (changes > 100 || changes < 1) {
+                System.out.println("Invalid input, please try again.");
+            } else {
+                value = false;
             }
+        }
+        System.out.println("You have " + changes + " chances to guess the number.");
+        // test
+        System.out.println("The correct number is: " + Arrays.toString(randomNum));
+
+        for (int i = 1; i <= changes; i++, count++) {
+            devider();
+            // Print historical guesses
+            for (int j = 0; j < changes; j++) {
+                System.out.printf("%d. %s %d Correct Numbers %d Correct Positions\n", j + 1, history[j],
+                        correctNumbers[j], correctPositions[j]);
+            }
+
             devider();
             System.out.print("Please enter your " + level + " guess number:");
-            userGuest = input.next();
-            userGuestLength = userGuest.length();
-            if (userGuestLength > level || userGuestLength < level) {
+            userGuess = input.next();
+            userGuessLength = userGuess.length();
+            if (userGuessLength > level || userGuessLength < level) {
                 devider();
                 System.out.println("Invalid input, please try again.");
                 i--;
                 count--;
                 continue;
             }
-            history[count] = userGuest;
+            history[count] = userGuess;
 
+            // Convert user's guess to array
             for (int k = level - 1; k >= 0; k--) {
-                guessNum[k] = userGuest.charAt(k) - '0';
+                guessNum[k] = userGuess.charAt(k) - '0';
             }
 
-            for (int p = 0; p < level; p++)
+            // Save original random numbers
+            for (int p = 0; p < level; p++) {
                 temp[p] = randomNum[p];
-            // check winner
-            for (int k = 0; k < level; k++) {// guessNum
-                if (randomNum[k] == guessNum[k]) {
-                    b[count]++;
-                }
-                for (int l = 0; l < level; l++) {// randomNum
-                    if (randomNum[l] == guessNum[k]) {
-                        a[count]++;
-                        randomNum[l] = -1;
+            }
 
+            // Check if the user has won
+            for (int k = 0; k < level; k++) {
+                if (randomNum[k] == guessNum[k]) {
+                    correctPositions[count]++;
+                }
+                for (int l = 0; l < level; l++) {
+                    if (randomNum[l] == guessNum[k]) {
+                        correctNumbers[count]++;
+                        randomNum[l] = -1;
                     }
                 }
-                if (b[count] == level) {
+                if (correctPositions[count] == level) {
                     System.out.println("Congratulations! You win the game!");
-                    System.out.print("Please enter your name:");
+                    System.out.print("Please enter your name: ");
                     name = input.next();
                     endTime = System.currentTimeMillis();
-                    time = String.valueOf((endTime - startTime) / 1000);
-                    String message = name + " " + time;
-                    return new String[] { name, time };
+                    String time = String.valueOf((endTime - startTime) / 1000);
+                    return new String[] { name, time, String.valueOf(i) };
                 }
             }
-            for (int p = 0; p < level; p++)
+            // Restore random numbers
+            for (int p = 0; p < level; p++) {
                 randomNum[p] = temp[p];
+            }
         }
-        devider();
         for (int j = 0; j < 10; j++) {
-            if (level == 4)
-                System.out.printf("%d. %s %dA %dB\n", j + 1, history[j], a[j], b[j]);
-            else if (level == 6)
-                System.out.printf("%d. %s %dA %dB\n", j + 1, history[j], a[j], b[j]);
-            else if (level == 8)
-                System.out.printf("%d. %s %dA %dB\n", j + 1, history[j], a[j], b[j]);
+            System.out.printf("%d. %s %d Correct Numbers %d Correct Positions\n", j + 1, history[j], correctNumbers[j],
+                    correctPositions[j]);
         }
         devider();
         System.out.println("Sorry! You lose the game!");
-        System.out.println("The correct number is:" + randomNum[0] + randomNum[1] + randomNum[2] + randomNum[3]);
+        System.out.println("The correct number is: " + Arrays.toString(randomNum));
+        return new String[] { "", "0", "0" };
     }
 
     public static void rule() {
-        System.out.println("Rule of the game:");
-        System.out.println("1. The game will generate random number between 0 to 9.");
-        System.out.println("2. A is for correct number but wrong position.");
-        System.out.println("3. B is for correct number and correct position.");
-        System.out.println("4. If you guess all the number correctly, you win the game.");
-        System.out.println("5. If you fail to guess the number, you lose the game.");
-        System.out.println("6. Good luck!");
+        System.out.println("Rules of the Game:");
+        System.out.println("1. The game will generate a set of random numbers between 0 and 9.");
+        System.out.println("2. You will be given a certain number of attempts to guess the correct sequence.");
+        System.out.println("3. After each guess, you will receive feedback in the form of two values:");
+        System.out.println("   - 'Correct Numbers' represents how many numbers are correct but in the wrong position.");
+        System.out
+                .println("   - 'Correct Positions' represents how many numbers are correct and in the right position.");
+        System.out.println("4. You need to guess the correct sequence of numbers within 10 attempts.");
+        System.out.println("5. If you guess all the numbers correctly and in the correct order, you win the game!");
+        System.out.println(
+                "6. The game includes three difficulty levels: Easy (4 numbers), Medium (6 numbers), and Hard (8 numbers).");
+        System.out.println("   - Easy: Lower difficulty with 4 numbers to guess.");
+        System.out.println("   - Medium: Moderate difficulty with 6 numbers to guess.");
+        System.out.println("   - Hard: Higher difficulty with 8 numbers to guess.");
+        System.out.println(
+                "7. The leaderboard ranks players based on time taken to guess the sequence, as well as difficulty level.");
+        System.out.println("   - Faster players and those playing at higher difficulty levels will rank higher.");
+        System.out.println("8. If you fail to guess the sequence within the allowed attempts, you lose the game.");
     }
-
-    public static void rank(String[] name, int[] time) {
-
-        System.out.println("Rank of the game:");
-        System.out.println("1. Player 1: 10 points");
-        System.out.println("2. Player 2: 9 points");
-        System.out.println("3. Player 3: 8 points");
-        System.out.println("4. Player 4: 7 points");
-        System.out.println("5. Player 5: 6 points");
-    }
-
-    public static boolean backMenu() {
-        Scanner input = new Scanner(System.in);
-        String userInput = "";
-        boolean quitGame = false;
-
+    public static void rank(String[] name, int[] time, int[] level, int[] attempts) {
         devider();
-        System.out.println("Do you want back to menu? [Y/N]");
-        userInput = input.nextLine();
-
-        if (userInput.equalsIgnoreCase("Y")) {
-            quitGame = false;
-        } else if (userInput.equalsIgnoreCase("N")) {
-            quitGame = true;
-        } else {
-            System.out.println("Invalid input, please try again.");
+        System.out.println("Rank of the game by difficulty, time, and attempts:");
+        for (int i = 0; i < 5; i++) {
+            if (name[i] != null) {
+                System.out.println((i + 1) + ". " + (name[i] == null ? "No player" : name[i]) + " Time: " + time[i]
+                        + "s Difficulty: " + level[i] + " Attempts: " + attempts[i]);
+            }
         }
-        return quitGame;
+    }
+
+    public static void updateRank(String[] nameRank, int[] timeRank, int[] levelRank, int[] attemptsRank, String name, int time,
+            int levelWeight, int attempts) {
+        double totalScore = time / levelWeight; // Combine time with difficulty: higher difficulty adds more to the score
+
+        for (int i = 0; i < 5; i++) {
+            if (totalScore < timeRank[i]) {
+                // Move the lower ranks down
+                for (int j = 4; j > i; j--) {
+                    timeRank[j] = timeRank[j - 1];
+                    nameRank[j] = nameRank[j - 1];
+                    levelRank[j] = levelRank[j - 1];
+                    attemptsRank[j] = attemptsRank[j - 1];
+                }
+                // Insert new rank
+                timeRank[i] = time;
+                nameRank[i] = name;
+                levelRank[i] = levelWeight;
+                attemptsRank[i] = attempts;
+                break;
+            }
+        }
     }
 
     public static void devider() {
@@ -283,5 +251,4 @@ public class num {
         }
         System.out.println();
     }
-
 }
