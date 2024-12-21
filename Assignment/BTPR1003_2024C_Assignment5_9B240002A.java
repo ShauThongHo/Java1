@@ -1,7 +1,7 @@
 //HO SHAU THONG
 //9B240002A
 //BoS24-A1
-//7 Dec 2024
+//20 Dec 2024
 /*(Using arrays) Write a program that reads the integers between 1 and 100 and counts the occurrences of each. 
 Assume the input ends with 0. Here is a sample run of the program: 
 Enter the integers between 1 and 100: 23 24 1 2 3 1 2 3 5 6 34 24 24 90 0 
