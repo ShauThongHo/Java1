@@ -130,8 +130,8 @@ public class BTPR1003_2024C_Project_9B240002A {
         }
         devider();
         System.out.println("You have" + chances + "chances to guess the number.");
-        // test
-        System.out.println("The correct number is: " + Arrays.toString(randomNum));
+        //Test use,remove the comment to see the correct number
+        //System.out.println("The correct number is: " + Arrays.toString(randomNum));
 
         for (int i = 1; i <= chances; i++, count++) {
             devider();
